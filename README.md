@@ -1,6 +1,16 @@
 # Hourly Income EDMC Plugin
 
-This is a simple plugin for [EDMarketConnector](https://github.com/Marginal/EDMarketConnector/wiki), based on and adapted from the [EDMCJumpSpeed](https://github.com/inorton/EDMCJumpSpeed) plugin, so credit for most of the work done should be directed to their makers!
+## Athanasius' Version
+
+Mostly just to fix "`config.get()` is deprecated" logging at startup I forked
+this to also make any further improvements.  On 2022-08-13 when I performed the
+fork, Exynom hadn't updated the plugin in "3 years" according to GitHun, and
+had very little in the way of GitHub activity otherwise.
+
+## Exynom's README
+This is a simple plugin for [EDMarketConnector](https://github.com/EDCD/EDMarketConnector/wiki),
+based on and adapted from the [EDMCJumpSpeed](https://github.com/inorton/EDMCJumpSpeed)
+plugin, so credit for most of the work done should be directed to their makers!
 
 ![In-game Screenshot](Screenshot.png)
 
