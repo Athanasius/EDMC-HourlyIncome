@@ -28,40 +28,45 @@ class This():
 class Transaction(object):
     """The details about a single transaction."""
 
-    earnings = 0.0
-    time = 0.0
-    is_docking_event = 0.0
+    earnings: float = 0.0
+    time: float = 0.0
+    is_docking_event: float = 0.0
 
 
 class HourlyIncome(object):
     """The main class for the hourlyincome plugin."""
 
-    speed_widget: Optional[tk.Label] = None
-    rate_widget: Optional[tk.Label] = None
-    earned_widget: Optional[tk.Label] = None
-    saved_earnings = 0
+    parent: tk.Tk
+    speed_widget: tk.Label
+    rate_widget: tk.Label
+    earned_widget: tk.Label
+    saved_earnings: float = 0.0
     transactions: List = []
 
-    def reset(self):
+    def __init__(self, parent: tk.Tk):
+        self.parent = parent
+
+    def reset(self) -> None:
         """Handle the reset button being pressed."""
+        self.saved_earnings = 0.0
         self.transactions = []
-        self.saved_earnings = 0
         self.update_window()
         self.save()
 
-    def load(self):
+    def load(self) -> None:
         """Load saved earnings from config."""
         saved = config.get_str(CFG_EARNINGS)
         if not saved:
             self.saved_earnings = 0.0
+
         else:
             self.saved_earnings = float(saved)
 
-    def save(self):
+    def save(self) -> None:
         """Save the saved earnings to config."""
         config.set(CFG_EARNINGS, str(self.saved_earnings + self.trip_earnings()))
 
-    def transaction(self, earnings: float):
+    def transaction(self, earnings: float) -> None:
         """
         Record a transaction.
 
@@ -75,7 +80,7 @@ class HourlyIncome(object):
         self.update_window()
         self.save()
 
-    def register_docking(self):
+    def register_docking(self) -> None:
         """Record a docking event."""
         data = Transaction()
         data.earnings = 0.0
@@ -85,7 +90,7 @@ class HourlyIncome(object):
         self.update_window()
         self.save()
 
-    def trip_earnings(self):
+    def trip_earnings(self) -> float:
         """
         Calculate the current trip earnings.
 
@@ -93,7 +98,7 @@ class HourlyIncome(object):
         """
         return sum([x.earnings for x in self.transactions])
 
-    def rate(self):
+    def rate(self) -> float:
         """
         Calculate the rate of station visits/hour.
 
@@ -103,10 +108,11 @@ class HourlyIncome(object):
             started = self.transactions[0].time
             now = time.time()
             return sum([x.is_docking_event for x in self.transactions]) * 60.0 * 60.0 / (now - started)
+
         else:
             return 0.0
 
-    def speed(self):
+    def speed(self) -> float:
         """
         Calculate the current credits/hour.
 
@@ -117,54 +123,61 @@ class HourlyIncome(object):
             started = self.transactions[0].time
             now = time.time()
             return earned * 60.0 * 60.0 / (now - started)
+
         else:
             return 0.0
 
-    def update_window(self):
+    def update_window(self) -> None:
         """Update our EDMC UI elements."""
         self.update_earned()
         self.update_transaction_rate()
         self.update_hourlyincome()
 
-    def update_transaction_rate(self):
+    def update_transaction_rate(self) -> None:
         """
         Set the transaction rate rate in the EDMC window.
 
         :param msg:
         """
         msg = f"{Locale.stringFromNumber(self.rate(), 2)} Visits/hr"
-        self.rate_widget.after(0, self.rate_widget.config, {"text": msg})
+        self.parent.after(0, self.rate_widget.config, {"text": msg})
 
-    def update_hourlyincome(self):
+    def update_hourlyincome(self) -> None:
         """
         Set the transaction speed rate in the EDMC window.
 
         :param msg:
         """
         msg = f"{Locale.stringFromNumber(self.speed(), 2)} Cr/hr"
-        self.speed_widget.after(0, self.speed_widget.config, {"text": msg})
+        self.parent.after(0, self.speed_widget.config, {"text": msg})
 
-    def update_earned(self):
+    def update_earned(self) -> None:
         """
         Set the transaction speed rate in the EDMC window.
 
         :param msg:
         """
         msg = f"{Locale.stringFromNumber(self.trip_earnings() + self.saved_earnings, 2)} Cr"
-        self.earned_widget.after(0, self.earned_widget.config, {"text": msg})
+        self.parent.after(0, self.earned_widget.config, {"text": msg})
 
 
-def plugin_start3(plugin_dir: str):
-    """Plugin start-up."""
-    hourlyincome = HourlyIncome()
-    hourlyincome.load()
-    this.hourlyincome = hourlyincome
+def plugin_start3(plugin_dir: str) -> str:
+    """
+    Plugin start-up.
+
+    :param plugin_dir: `str` - The full path to this plugin's directory.
+    :return: `str` - Name of this plugin to use in UI.
+    """
     # this.hourlyincome.transaction(0)
+
+    return 'Hourly_Income'
 
 
 def plugin_app(parent: tk.Tk):
     """Create a pair of TK widgets for the EDMC main window."""
-    hourlyincome = this.hourlyincome
+    hourlyincome = HourlyIncome(parent)
+    hourlyincome.load()
+    this.hourlyincome = hourlyincome
 
     frame = tk.Frame(parent)
 
