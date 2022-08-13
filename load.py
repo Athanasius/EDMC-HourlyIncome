@@ -185,7 +185,7 @@ def plugin_app(parent: tk.Tk):
         frame,
         text="...",
         justify=tk.RIGHT)
-    rate_label = tk.Label(frame, text="Station Visit Rate:", justify=tk.LEFT)
+    rate_label = tk.Label(frame, text="Station Visits:", justify=tk.LEFT)
     rate_label.grid(row=0, column=0, sticky=tk.W)
     hourlyincome.rate_widget.grid(row=0, column=2, sticky=tk.E)
 
@@ -193,7 +193,7 @@ def plugin_app(parent: tk.Tk):
         frame,
         text="...",
         justify=tk.RIGHT)
-    speed_label = tk.Label(frame, text="Hourly Income:", justify=tk.LEFT)
+    speed_label = tk.Label(frame, text="Income:", justify=tk.LEFT)
     speed_label.grid(row=1, column=0, sticky=tk.W)
     hourlyincome.speed_widget.grid(row=1, column=2, sticky=tk.E)
 
