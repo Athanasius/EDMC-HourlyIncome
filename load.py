@@ -1,12 +1,12 @@
 """
-The "Hourly Income" Plugin
+Calculate and display hourly income since last reset.
+
+Based on Exynom's original.
 """
-try: #py3
-    import tkinter as tk
-except: #py2
-    import Tkinter as tk
 import sys
 import time
+import tkinter as tk
+
 from l10n import Locale
 
 this = sys.modules[__name__]  # For holding module globals
