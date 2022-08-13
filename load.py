@@ -53,7 +53,7 @@ class HourlyIncome(object):
         Load saved earnings from config
         :return:
         """
-        saved = config.get(CFG_EARNINGS)
+        saved = config.get_str(CFG_EARNINGS)
         if not saved:
             self.saved_earnings = 0.0
         else:
