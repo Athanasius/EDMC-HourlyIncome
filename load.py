@@ -3,23 +3,27 @@ Calculate and display hourly income since last reset.
 
 Based on Exynom's original.
 """
-import sys
 import time
 import tkinter as tk
 
 from config import config
 from l10n import Locale
 
-this = sys.modules[__name__]  # For holding module globals
-
 CFG_EARNINGS = "EarningSpeed_earnings"
+
+
+class This():
+    """Holds module globals."""
+
+    def __init__(self):
+        self.hourlyincome: HourlyIncome
 
 
 class Transaction(object):
     """The details about a single transaction."""
 
     earnings = 0.0
-    time = 0
+    time = 0.0
     is_docking_event = 0.0
 
 
@@ -30,7 +34,7 @@ class HourlyIncome(object):
     rate_widget = None
     earned_widget = None
     saved_earnings = 0
-    transactions = []
+    transactions: list = []
 
     def reset(self):
         """Handle the reset button being pressed."""
@@ -51,7 +55,7 @@ class HourlyIncome(object):
         """Save the saved earnings to config."""
         config.set(CFG_EARNINGS, str(self.saved_earnings + self.trip_earnings()))
 
-    def transaction(self, earnings):
+    def transaction(self, earnings: float):
         """
         Record a transaction.
 
@@ -144,7 +148,7 @@ class HourlyIncome(object):
         self.earned_widget.after(0, self.earned_widget.config, {"text": msg})
 
 
-def plugin_start3(plugin_dir):
+def plugin_start3(plugin_dir: str):
     """Plugin start-up."""
     hourlyincome = HourlyIncome()
     hourlyincome.load()
@@ -361,3 +365,6 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):  # noqa: CCR001
         elif "Docked" in entry["event"]:
             this.hourlyincome.register_docking()
         #######################################################################
+
+
+this = This()
