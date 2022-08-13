@@ -5,9 +5,14 @@ Based on Exynom's original.
 """
 import time
 import tkinter as tk
+from typing import TYPE_CHECKING, Any, List, Mapping, MutableMapping, Optional
 
 from config import config
 from l10n import Locale
+
+if TYPE_CHECKING:
+    def _(x: str) -> str:
+        return x
 
 CFG_EARNINGS = "EarningSpeed_earnings"
 
@@ -17,6 +22,7 @@ class This():
 
     def __init__(self):
         self.hourlyincome: HourlyIncome
+        self.spacer: tk.Frame
 
 
 class Transaction(object):
@@ -30,11 +36,11 @@ class Transaction(object):
 class HourlyIncome(object):
     """The main class for the hourlyincome plugin."""
 
-    speed_widget = None
-    rate_widget = None
-    earned_widget = None
+    speed_widget: Optional[tk.Label] = None
+    rate_widget: Optional[tk.Label] = None
+    earned_widget: Optional[tk.Label] = None
     saved_earnings = 0
-    transactions: list = []
+    transactions: List = []
 
     def reset(self):
         """Handle the reset button being pressed."""
@@ -156,7 +162,7 @@ def plugin_start3(plugin_dir: str):
     # this.hourlyincome.transaction(0)
 
 
-def plugin_app(parent):
+def plugin_app(parent: tk.Tk):
     """Create a pair of TK widgets for the EDMC main window."""
     hourlyincome = this.hourlyincome
 
@@ -196,7 +202,14 @@ def plugin_app(parent):
     return frame
 
 
-def journal_entry(cmdr, is_beta, system, station, entry, state):  # noqa: CCR001, C901
+def journal_entry(  # noqa: CCR001, C901
+    cmdr: str,
+    is_beta: bool,
+    system: str,
+    station: str,
+    entry: MutableMapping[str, Any],
+    state: Mapping[str, Any]
+) -> Optional[str]:
     """
     Process a journal event.
 
@@ -365,6 +378,8 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):  # noqa: CCR001
         elif "Docked" in entry["event"]:
             this.hourlyincome.register_docking()
         #######################################################################
+
+    return None
 
 
 this = This()
